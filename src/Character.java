@@ -16,7 +16,7 @@ public class Character {
 
 
     //constructor
-public Character(int pXpos,int pYpos, int pDx, int pDy){
+public Character(int pXpos,int pYpos, int pDx, int pDy, boolean pIsAlive){
 
 
     xpos=pXpos;
@@ -25,7 +25,9 @@ public Character(int pXpos,int pYpos, int pDx, int pDy){
     dy=pDy;
     width = 60;
     height=80;
-    isAlive=true;
+    isAlive=pIsAlive;
+    rec=new Rectangle(xpos,ypos,width,height);
+
 }
 
     //additional methods, including a printInfo()
@@ -38,7 +40,9 @@ public void bouncemove(){
         dx=(-1)*dx;
     }
 if (ypos>(700-height)){
+    ypos=ypos-5;
     dy=(-1)*dy;
+
 }
 if (ypos<0){
     dy=(-1)*dy;
@@ -80,7 +84,9 @@ if (ypos<0){
 
 
     }
+    public void keyMove(){
 
+    }
 
     public void printInfo(){
     System.out.println("X position"+xpos);
