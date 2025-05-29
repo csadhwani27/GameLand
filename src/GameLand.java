@@ -53,9 +53,13 @@ public boolean shaiIsIntersectingScore;
 public boolean jbIsIntersectingScore;
 public boolean lukaIsIntersectingScore;
 public boolean lebrongIsIntersectingScore;
+public boolean gameOver=false;
+public boolean bballIsIntersenctingJayson;
+
 
 
 public Image bballbackground;
+public Image gameOverBackground;
 
 
 //Sets the width and height of the program window
@@ -88,14 +92,18 @@ public Image bballbackground;
         //create (construct) the objects needed for the game
          astro = new Character(200,100,3,3, true);
          jayson=new Character(500,100,0,0,true);
-         jb=new Character(100,100,3,3,true);
-         shai=new Character(-100,-100,3,3,false);
-         lebron=new Character(-100,-100,3,-3,false);
-         Luka = new Character(-100,-100,3,3,false);
-         bball=new Character(200,100,3,3, false);
+         jb=new Character(100,100,4,4,true);
+         shai=new Character(-100,-100,4,4,false);
+         lebron=new Character(-100,-100,4,-4,false);
+         Luka = new Character(-100,-100,4,4,false);
+         bball=new Character(-100,-100,0,0, true);
          Score = new Character(745, 260,0,0,true);
          Score.height = 190;
         Score.width = 170;
+        Score.rec.height = 190;
+        Score.rec.width = 170;
+        bball.rec.width=2;
+        bball.rec.height=2;
 
          //construct and chose a size for your array
          jaysons = new Character[0];
@@ -117,6 +125,8 @@ public Image bballbackground;
         lukaPic=Toolkit.getDefaultToolkit().getImage("luka.png");
         ballPic=Toolkit.getDefaultToolkit().getImage("bball.png");
         ScorePic=Toolkit.getDefaultToolkit().getImage("Score.png");
+        gameOverBackground=Toolkit.getDefaultToolkit().getImage("GAME OVER.png");
+
 
 
         bballbackground=Toolkit.getDefaultToolkit().getImage("bballbackground.png");
@@ -149,8 +159,9 @@ public Image bballbackground;
         //for the moment we will loop things forever.
         while(true) {
             moveThings();
-            checkIntersections();//move all the game objects
             checkScore();
+            checkIntersections();//move all the game objects
+
             render();  // paint the graphics
             pause(10); // sleep for 10 ms
         }
@@ -166,7 +177,9 @@ public Image bballbackground;
         }
    lebron.bouncemove();
    Luka.bouncemove();
-   bball.bouncemove();
+   if(bball.isAlive==true) {
+       bball.bouncemove();
+   }
         for(int x=0; x<jaysons.length; x=x+1){
             jaysons[x].bouncemove();
         }
@@ -237,15 +250,39 @@ public Image bballbackground;
         jaysonIsIntersectingBball=false;
 
         if (jayson.rec.intersects(bball.rec)){
-            jaysonVelocity=jaysonVelocity+1;
+            jaysonVelocity=jaysonVelocity+2;
+            System.out.println("Interaction");
+
 
         }
         if (jayson.rec.intersects(bball.rec)){
             bball.ypos=30000000;
+            bball.isAlive=true;
+
+
+        }
+
+        if (jb.rec.intersects(Score.rec)){
+           jb.dy=(-1)*jb.dy;
+            jb.dx=(-1)*jb.dx;
+
+        }
+        if (lebron.rec.intersects(Score.rec)){
+            lebron.dy=(-1)*lebron.dy;
+            lebron.dx=(-1)*lebron.dx;
+        }
+        if (shai.rec.intersects(Score.rec)){
+            shai.dy=(-1)*shai.dy;
+            shai.dx=(-1)*shai.dx;
+        }
+        if (Luka.rec.intersects(Score.rec)){
+            Luka.dy=(-1)*Luka.dy;
+            Luka.dx=(-1)*Luka.dx;
         }
 
         if (Luka.rec.intersects(Score.rec) == true){
             score=0;
+            gameOver=true;
             System.out.println("score reset");
         }
         lukaIsIntersectingScore=false;
@@ -253,6 +290,7 @@ public Image bballbackground;
         if (shai.rec.intersects(Score.rec) == true){
             shaiIsIntersectingScore=true;
                     score=0;
+                    gameOver=true;
             System.out.println("score reset");
 
         }
@@ -261,6 +299,7 @@ public Image bballbackground;
         if (jb.rec.intersects(Score.rec) == true){
             jbIsIntersectingScore=true;
             score=0;
+            gameOver=true;
             System.out.println("score reset");
 
         }
@@ -269,6 +308,7 @@ public Image bballbackground;
         if (lebron.rec.intersects(Score.rec)){
             lebrongIsIntersectingScore=true;
             score=0;
+            gameOver=true;
             System.out.println("score reset");
 
         }
@@ -286,7 +326,12 @@ public Image bballbackground;
                 jaysons[x].dy = 0;
 
 
+
             }
+
+
+
+
         }
     }
 
@@ -301,13 +346,28 @@ public Image bballbackground;
             lebron.isAlive=true;
             lebron.xpos=50;
             lebron.ypos=50;
+            lebron.dy=4;
+            lebron.dx=4;
         }
 
         if (score>2000 && Luka.xpos<0 || Luka.xpos>1000 && Luka.ypos<0 || Luka.ypos>710){
             Luka.isAlive=true;
             Luka.xpos=50;
             Luka.ypos=50;
+            Luka.dx=4;
+            Luka.dy=4;
         }
+        if (score>1000&& score<1200 && bball.isAlive==true &&  (bball.xpos<0 || bball.xpos>1000) && (bball.ypos<0 || bball.ypos>710)){
+          bballIsIntersenctingJayson=true;
+           // bball.isAlive=true;
+            bball.xpos=(int) (Math.random() * 700);
+            bball.ypos=(int) (Math.random() * 100);
+            bball.dy=3;
+            bball.dx=5;
+
+        }
+bballIsIntersenctingJayson=false;
+
 
 
 
@@ -340,8 +400,13 @@ public Image bballbackground;
                 g.drawImage(lukaPic,Luka.xpos,Luka.ypos,Luka.width,Luka.height,null);
                 g.drawImage(ballPic,bball.xpos,bball.ypos,bball.width,bball.height,null);
                 g.drawImage(ScorePic,Score.xpos, Score.ypos, Score.width,Score.height,null);
+                g.drawRect(Score.rec.x, Score.rec.y, Score.rec.width,Score.rec.height);
 
                 g.drawString("Score: " + score,800,100 );
+                if (gameOver==true){
+                g.drawImage(gameOverBackground,0,0,WIDTH,HEIGHT,null);
+                }
+
 
 
                 g.dispose();
